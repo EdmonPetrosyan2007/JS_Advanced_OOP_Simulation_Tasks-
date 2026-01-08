@@ -35,7 +35,7 @@ class Dish {
         return this._name;
       },
       set(value) {
-        if (!value || typeof value !== "string" || value.trim() === "") {
+        if (!value || typeof value !== "string" || value.trim() == "") {
           throw new ValidationError("Dish name empty string.");
         }
         this._name = value;
@@ -99,7 +99,7 @@ class Dessert extends Dish {
 
 class Menu {
   constructor(menuType) {
-    if (new.target === Menu) {
+    if (new.target == Menu) {
       throw new Error("Menu is an abstract class");
     }
     this.menuType = menuType;
@@ -335,31 +335,6 @@ function withLogging(originalMethod, methodName, restaurant = null) {
   };
 }
 
-function withDiscount(originalMethod, restaurant) {
-  return function (order) {
-    let discountPercent = 0;
-
-    if (order.getTotal() > 50) {
-      discountPercent = 10;
-    } else if (order.getTotal() > 30) {
-      discountPercent = 5;
-    }
-
-    if (order.customer.isLoyalCustomer(3)) {
-      discountPercent += 5;
-    }
-
-
-    if (discountPercent > 0) {
-      const originalTotal = order.getTotal();
-      const discountAmount = originalTotal * (discountPercent / 100);
-      console.log(`Loyalty $${discountAmount.toFixed(2)} (${discountPercent}%)`);
-    }
-
-    return originalMethod.apply(this, arguments);
-  };
-}
-
 class Restaurant {
   constructor(name) {
     this.name = name;
@@ -388,8 +363,8 @@ class Restaurant {
     order.placeOrder(this);
     const summary = order.viewSummary();
     console.log(`\nOrder placed for ${summary.customer}:`);
-    console.log(`  Items: ${summary.items.map(item => `${item.name} x${item.quantity}`).join(", ")}`);
-    console.log(`  Total: $${summary.total}\n`);
+    console.log(` Items: ${summary.items.map(item => `${item.name} x${item.quantity}`).join(", ")}`);
+    console.log(`Total: $${summary.total}\n`);
   }
 
   getAllMenus() {
@@ -437,7 +412,7 @@ try {
   console.log("Desserts:", allMenus.desserts);
 
   const customer1 = new Customer("Edmon", "Edmon@example.com");
-  const customer2 = new Customer("Edmon Petrosyan", "5551234567");
+  const customer2 = new Customer("Edmon Petrosyan", "555185252234567");
 
   const order1 = myRestaurant.createOrder(customer1);
   order1.addDish("Bruschetta", [myRestaurant.appetizerMenu]);
@@ -460,12 +435,12 @@ try {
   myRestaurant.placeOrder(order2);
 
   console.log("=== -Dynamic Pricing- ===");
-  console.log("Before: Grilled Salmon price:", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
+  console.log("Before", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
   myRestaurant.entreeMenu.increasePrice("Grilled Salmon", 15);
-  console.log("After 15% ", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
+  console.log("After 15%-->", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
 
   myRestaurant.dessertMenu.decreasePrice("Tiramisu", 10);
-  console.log("After 10% ", myRestaurant.dessertMenu.getDish("Tiramisu").price);
+  console.log("After 10%-->", myRestaurant.dessertMenu.getDish("Tiramisu").price);
 } catch (error) {
   console.error(error);
 }

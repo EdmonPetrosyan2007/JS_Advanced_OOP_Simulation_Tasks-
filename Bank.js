@@ -60,8 +60,8 @@ class BankAccount {
   }
 
 
-  #addTransaction(tx) {
-    this.#transactions.push(tx);
+  #addTransaction(txy) {
+    this.#transactions.push(txy);
   }
 
   deposit(amount) {
@@ -118,7 +118,7 @@ class BankAccount {
     this.withdraw(amount);
     targetAccount.deposit(amount);
 
-    const tx = new Transaction({
+    const txy = new Transaction({
       accountNumber: this.accountNumber,
       amount,
       transactionType: "TRANSFER",
@@ -126,7 +126,7 @@ class BankAccount {
       toAccount: targetAccount.accountNumber
     });
 
-    this.#addTransaction(tx);
+    this.#addTransaction(txy);
     targetAccount.#addTransaction(
       new Transaction({
         accountNumber: targetAccount.accountNumber,
@@ -230,6 +230,14 @@ function defineValidated(obj, proprt, initial, validateFn) {
   });
 }
 
+var rand = function() {
+    return Math.random().toString(36).substr(2); 
+};
+
+var token = function() {
+    return rand()
+};
+
 
 class Transaction {
   constructor({ accountNumber, amount, transactionType, fromAccount=null, toAccount=null }) {
@@ -248,8 +256,8 @@ const cout = new Customer("Edmon", "edmonpetrosyan07@mail.com", +37493607262);
 
 
 
-const user1 = new IndividualAccount("145xs6s51s51x5ssx1", 1000);
-const user2 = new IndividualAccount("AramAccount1234", 300);
+const user1 = new IndividualAccount(rand(), 1000);
+const user2 = new IndividualAccount(rand(), 300);
 
 cout.addAccount(user1);
 cout.addAccount(user2);
