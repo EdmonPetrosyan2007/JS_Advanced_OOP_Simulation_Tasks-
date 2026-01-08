@@ -23,7 +23,7 @@ class ValidationError extends Error {
 class Dish {
   constructor(name, price, category = "general") {
     if (new.target === Dish) {
-      throw new Error("Dish is an abstract class and cannot be instantiated directly.");
+      throw new Error("Dish is an abstract class ");
     }
 
     this._name = name;
@@ -36,7 +36,7 @@ class Dish {
       },
       set(value) {
         if (!value || typeof value !== "string" || value.trim() === "") {
-          throw new ValidationError("Dish name must be a non-empty string.");
+          throw new ValidationError("Dish name empty string.");
         }
         this._name = value;
       },
@@ -50,7 +50,7 @@ class Dish {
       },
       set(value) {
         if (typeof value !== "number" || value <= 0) {
-          throw new ValidationError("Price must be a positive number.");
+          throw new ValidationError("not number");
         }
         this._price = value;
       },
@@ -91,7 +91,7 @@ class Entree extends Dish {
 class Dessert extends Dish {
   constructor(name, price) {
     if (price > 15) {
-      throw new ValidationError("Dessert price cannot exceed $15.");
+      throw new ValidationError("Dessert  exceed $15.");
     }
     super(name, price, "dessert");
   }
@@ -100,7 +100,7 @@ class Dessert extends Dish {
 class Menu {
   constructor(menuType) {
     if (new.target === Menu) {
-      throw new Error("Menu is an abstract class and cannot be instantiated directly.");
+      throw new Error("Menu is an abstract class");
     }
     this.menuType = menuType;
     this.#dishes = new Map();
@@ -110,7 +110,7 @@ class Menu {
 
   addDish(dish) {
     if (!(dish instanceof Dish)) {
-      throw new InvalidOrderError("Item must be a Dish instance.");
+      throw new InvalidOrderError("Item must  Dish instance.");
     }
     this.#dishes.set(dish.name.toLowerCase(), dish);
   }
@@ -150,7 +150,7 @@ class Menu {
     const decrease = dish.price * (percent / 100);
     const newPrice = dish.price - decrease;
     if (newPrice <= 0) {
-      throw new ValidationError("Price cannot be zero or negative.");
+      throw new ValidationError("Price cannot  negative.");
     }
     dish.price = newPrice;
   }
@@ -160,7 +160,7 @@ class Menu {
       try {
         this.increasePrice(dishName, percentIncrease);
       } catch (error) {
-        console.warn(`Could not apply demand pricing to ${dishName}:`, error.message);
+        console.warn(`Could not  ${dishName}:`, error.message);
       }
     });
   }
@@ -199,7 +199,7 @@ class Order {
 
   addDish(dishName, menus, quantity = 1) {
     if (quantity <= 0 || !Number.isInteger(quantity)) {
-      throw new InvalidOrderError("Quantity must be a positive integer.");
+      throw new InvalidOrderError("Quantity ");
     }
 
     let dish = null;
@@ -212,7 +212,7 @@ class Order {
     }
 
     if (!dish) {
-      throw new DishNotFoundError(`Dish "${dishName}" not found in any menu.`);
+      throw new DishNotFoundError(`Dish "${dishName}" any menu.`);
     }
 
     const dishKey = dishName.toLowerCase();
@@ -271,7 +271,7 @@ class Customer {
       },
       set(value) {
         if (!value || typeof value !== "string" || value.trim() === "") {
-          throw new ValidationError("Name must be a non-empty string.");
+          throw new ValidationError("Name must empty string.");
         }
         this._name = value;
       },
@@ -288,7 +288,7 @@ class Customer {
         const phoneRegex = /^\d{10}$/;
         if (!emailRegex.test(value) && !phoneRegex.test(value)) {
           throw new ValidationError(
-            "Contact info must be a valid email or 10-digit phone number."
+            "Contact info  be a email "
           );
         }
         this._contactInfo = value;
@@ -353,7 +353,7 @@ function withDiscount(originalMethod, restaurant) {
     if (discountPercent > 0) {
       const originalTotal = order.getTotal();
       const discountAmount = originalTotal * (discountPercent / 100);
-      console.log(`Loyalty/Bulk Discount Applied: -$${discountAmount.toFixed(2)} (${discountPercent}%)`);
+      console.log(`Loyalty $${discountAmount.toFixed(2)} (${discountPercent}%)`);
     }
 
     return originalMethod.apply(this, arguments);
@@ -436,15 +436,15 @@ try {
   console.log("Entrees:", allMenus.entrees);
   console.log("Desserts:", allMenus.desserts);
 
-  const customer1 = new Customer("John Doe", "john@example.com");
-  const customer2 = new Customer("Jane Smith", "5551234567");
+  const customer1 = new Customer("Edmon", "Edmon@example.com");
+  const customer2 = new Customer("Edmon Petrosyan", "5551234567");
 
   const order1 = myRestaurant.createOrder(customer1);
   order1.addDish("Bruschetta", [myRestaurant.appetizerMenu]);
   order1.addDish("Grilled Salmon", [myRestaurant.entreeMenu]);
   order1.addDish("Chocolate Cake", [myRestaurant.dessertMenu]);
 
-  console.log("=== Order 1 Summary ===");
+  console.log("=== -Order 1 Summary- ===");
   console.log(order1.viewSummary());
 
   myRestaurant.placeOrder(order1);
@@ -454,18 +454,18 @@ try {
   order2.addDish("Ribeye Steak", [myRestaurant.entreeMenu]);
   order2.addDish("Tiramisu", [myRestaurant.dessertMenu], 2);
 
-  console.log("=== Order 2 Summary ===");
+  console.log("=== -Order 2 Summary- ===");
   console.log(order2.viewSummary());
 
   myRestaurant.placeOrder(order2);
 
-  console.log("=== Dynamic Pricing ===");
+  console.log("=== -Dynamic Pricing- ===");
   console.log("Before: Grilled Salmon price:", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
   myRestaurant.entreeMenu.increasePrice("Grilled Salmon", 15);
-  console.log("After 15% increase:", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
+  console.log("After 15% ", myRestaurant.entreeMenu.getDish("Grilled Salmon").price);
 
   myRestaurant.dessertMenu.decreasePrice("Tiramisu", 10);
-  console.log("After 10% decrease on Tiramisu:", myRestaurant.dessertMenu.getDish("Tiramisu").price);
+  console.log("After 10% ", myRestaurant.dessertMenu.getDish("Tiramisu").price);
 } catch (error) {
   console.error(error);
 }
